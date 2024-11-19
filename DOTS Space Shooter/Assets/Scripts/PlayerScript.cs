@@ -1,7 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
-using Unity.Jobs;
 using UnityEngine;
 
 public class PlayerScript : CharacterEntity
@@ -12,56 +11,65 @@ public class PlayerScript : CharacterEntity
         {
             Entity entt = GetEntity(TransformUsageFlags.Dynamic);
 
-            AddComponent(entt, new PlayerTag { });
-            AddComponent(entt, new CharacterData { m_health = script.m_health, m_moveSpeed = script.m_moveSpeed, m_isAlive = true });
+            AddComponent(entt, new PlayerData { });
+            AddComponent(entt, new CharacterData  { m_health = script.m_health, m_moveSpeed = script.m_moveSpeed, m_isAlive = true });
             AddComponent(entt, new LocalTransform { Position = script.transform.position, Rotation = script.transform.rotation });
-
-            // Save entity reference
-            script.m_entity = entt;
         }
     }
+}
 
-    private Camera m_camera;
-
-    protected override void Initialize()
+public partial struct PlayerRotation : ISystem
+{
+    public void OnCreate(ref SystemState state)
     {
-        m_camera = GetComponentInChildren<Camera>();
+        state.RequireForUpdate<PlayerData>();
     }
 
-    private void Update()
+    public void OnUpdate(ref SystemState state)
     {
-        CharacterData data = m_manager.GetComponentData<CharacterData>(m_entity);
-        if (!data.m_isAlive)
-            return;
+        Camera cam = GameObject.FindAnyObjectByType<PlayerScript>().GetComponentInChildren<Camera>();
 
-        LocalTransform t = m_manager.GetComponentData<LocalTransform>(m_entity);
-
-        LookAtMouse(t);
-        MoveInDirection(Time.deltaTime, data.m_moveSpeed, t);
+        // Player doesn't need to schedule job as it will only be one instance of it so we run the player on the main thread 
+        foreach (var (transform, player) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<PlayerData>>()){
+            Vector3 target = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, cam.transform.position.z - transform.ValueRW.Position.z, Input.mousePosition.y));
+            //Debug.Log(target);
+            target.y = transform.ValueRO.Position.y;
+            transform.ValueRW.Rotation = Quaternion.LookRotation(target, Vector3.up);
+        }
     }
+}
 
-    private void LookAtMouse(LocalTransform t)
+//[BurstCompile]
+[UpdateAfter(typeof(PlayerRotation))]
+public partial struct PlayerMove : ISystem
+{
+    public void OnCreate(ref SystemState state)
     {
-        Vector3 target = m_camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_camera.transform.position.z - transform.position.z));
-
-        transform.LookAt(target, Vector3.up);
-        t.Rotation = transform.rotation;
+        state.RequireForUpdate<PlayerData>();
     }
 
-    [BurstCompile]
-    private void MoveInDirection(float dt, float moveSpeed, LocalTransform transform){
-  
-        float x = Input.GetAxis("X");
-        float z = Input.GetAxis("Y");
+    //[BurstCompile]
+    public void OnUpdate( ref SystemState state)
+    {
+        float dt = SystemAPI.Time.DeltaTime;
 
-        Vector3 newPosition = transform.Position;
+        // Handled the same as PlayerRotation
+        foreach (var (transform, data, player) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<CharacterData>, RefRO<PlayerData>>())
+        {
+            float z = Input.GetAxis("Vertical");
+            float x = Input.GetAxis("Horizontal");
 
-        newPosition.x += ((x * moveSpeed) * transform.Forward().x) * dt;
-        newPosition.z += ((z * moveSpeed) * transform.Forward().z) * dt;
+            Vector3 newPosition = transform.ValueRO.Position;
 
-        transform.Position = newPosition;
+            Vector3 forward = transform.ValueRO.Forward();
+            Vector3 right   = transform.ValueRO.Right();
+
+            newPosition += (forward * data.ValueRO.m_moveSpeed * dt) * z; 
+            newPosition += (right   * data.ValueRO.m_moveSpeed * dt) * x; 
+
+            transform.ValueRW.Position = newPosition;
+        }
     }
-
 }
 
 

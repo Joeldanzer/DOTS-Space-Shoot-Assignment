@@ -1,4 +1,5 @@
 using Unity.Entities;
+using UnityEngine;
 
 public struct CharacterData : IComponentData
 {
@@ -10,4 +11,5 @@ public struct CharacterData : IComponentData
     public bool  m_isAlive;
 }
 
-public struct PlayerTag : IComponentData { }
+public struct PlayerData : IComponentData {
+}
