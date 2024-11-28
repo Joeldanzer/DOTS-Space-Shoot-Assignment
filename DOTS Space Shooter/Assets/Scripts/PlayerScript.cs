@@ -5,71 +5,76 @@ using UnityEngine;
 
 public class PlayerScript : CharacterEntity
 {
-    public class BakePlayer : Baker<PlayerScript>
+    [SerializeField] private float m_fireRate    = 0.05f;
+    [SerializeField] private float m_camDistance = 10.0f;
+
+    [SerializeField] private Transform[] m_barrels;
+
+    private int   m_barrelSelector = 0;
+    private float m_timeForNextShot = 0.0f;
+
+    private Camera        m_camera;
+    private BulletPooling m_bulletPool;
+
+    protected override void Initialize()
     {
-        public override void Bake(PlayerScript script)
+        m_camera     = Object.FindAnyObjectByType<Camera>();
+        m_bulletPool = Object.FindAnyObjectByType<BulletPooling>();
+
+        m_camera.transform.position = new Vector3(transform.position.x, transform.position.y + m_camDistance, transform.position.z);
+        m_camera.transform.LookAt(transform.position);
+    }
+
+    protected override void UpdateGameObject(float dt)
+    {
+        RotatePlayer();
+        MovePlayer(dt);
+        Shoot(dt);
+    }
+
+    private void RotatePlayer()
+    {
+        Vector3 target = m_camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_camera.transform.position.z));
+        target.y = transform.position.y;
+        transform.LookAt(target, Vector3.up);
+    }
+
+    void MovePlayer(float dt)
+    {
+        float z = Input.GetAxis("Vertical");
+        float x = Input.GetAxis("Horizontal");
+
+        Vector3 newPosition = transform.position;
+
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
+
+        CharacterData data = m_enitiyManager.GetComponentData<CharacterData>(m_entity);
+
+        newPosition += (forward * data.m_moveSpeed * dt) * z;
+        newPosition += (right * data.m_moveSpeed * dt) * x;
+
+        transform.position = newPosition;
+
+        newPosition.y = m_camera.transform.position.y;
+        m_camera.transform.position = newPosition;
+    }
+
+    void Shoot(float dt)
+    {
+
+        if (Input.GetMouseButton(0))
         {
-            Entity entt = GetEntity(TransformUsageFlags.Dynamic);
+            if(m_timeForNextShot <= 0.0f)
+            {
+                m_barrelSelector = m_barrelSelector >= m_barrels.Length ? 0 : m_barrelSelector++;
+                m_bulletPool.ShootBullet(m_barrels[m_barrelSelector], "Pistol Bullet");
 
-            AddComponent(entt, new PlayerData { });
-            AddComponent(entt, new CharacterData  { m_health = script.m_health, m_moveSpeed = script.m_moveSpeed, m_isAlive = true });
-            AddComponent(entt, new LocalTransform { Position = script.transform.position, Rotation = script.transform.rotation });
+                m_timeForNextShot = m_fireRate;
+            }
         }
+
+        m_timeForNextShot -= dt;
     }
 }
-
-public partial struct PlayerRotation : ISystem
-{
-    public void OnCreate(ref SystemState state)
-    {
-        state.RequireForUpdate<PlayerData>();
-    }
-
-    public void OnUpdate(ref SystemState state)
-    {
-        Camera cam = GameObject.FindAnyObjectByType<PlayerScript>().GetComponentInChildren<Camera>();
-
-        // Player doesn't need to schedule job as it will only be one instance of it so we run the player on the main thread 
-        foreach (var (transform, player) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<PlayerData>>()){
-            Vector3 target = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, cam.transform.position.z - transform.ValueRW.Position.z, Input.mousePosition.y));
-            //Debug.Log(target);
-            target.y = transform.ValueRO.Position.y;
-            transform.ValueRW.Rotation = Quaternion.LookRotation(target, Vector3.up);
-        }
-    }
-}
-
-//[BurstCompile]
-[UpdateAfter(typeof(PlayerRotation))]
-public partial struct PlayerMove : ISystem
-{
-    public void OnCreate(ref SystemState state)
-    {
-        state.RequireForUpdate<PlayerData>();
-    }
-
-    //[BurstCompile]
-    public void OnUpdate( ref SystemState state)
-    {
-        float dt = SystemAPI.Time.DeltaTime;
-
-        // Handled the same as PlayerRotation
-        foreach (var (transform, data, player) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<CharacterData>, RefRO<PlayerData>>())
-        {
-            float z = Input.GetAxis("Vertical");
-            float x = Input.GetAxis("Horizontal");
-
-            Vector3 newPosition = transform.ValueRO.Position;
-
-            Vector3 forward = transform.ValueRO.Forward();
-            Vector3 right   = transform.ValueRO.Right();
-
-            newPosition += (forward * data.ValueRO.m_moveSpeed * dt) * z; 
-            newPosition += (right   * data.ValueRO.m_moveSpeed * dt) * x; 
-
-            transform.ValueRW.Position = newPosition;
-        }
-    }
-}
-
 
