@@ -1,5 +1,4 @@
 using Unity.Entities;
-using UnityEngine;
 
 public struct CharacterData : IComponentData
 {
@@ -11,6 +10,11 @@ public struct CharacterData : IComponentData
     public bool  m_isAlive;
 }
 
+public struct EnemyData  : IComponentData
+{
+    public float m_damage;
+    public float m_range;
+}
 public struct BulletData : IComponentData
 {
     public float m_damage;

@@ -638,8 +638,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 0.8187107, b: 0.5235849, a: 1}
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -651,7 +651,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -697,13 +697,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.52225757, y: -0.21772577, z: 0.13993847, w: 0.8125637}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 65.46, y: -30, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -726,7 +726,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
+  m_SoftShadowQuality: 3
 --- !u!43 &821042712
 Mesh:
   m_ObjectHideFlags: 0
@@ -940,6 +940,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1272039126875274668, guid: 860ee37040c1f054b99fb5898ba34517, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1272039126875274668, guid: 860ee37040c1f054b99fb5898ba34517, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6915778308678493168, guid: 860ee37040c1f054b99fb5898ba34517, type: 3}
+      propertyPath: m_fireRate
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8607709401166881058, guid: 860ee37040c1f054b99fb5898ba34517, type: 3}
       propertyPath: m_Name
       value: Player
@@ -957,6 +969,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1940671719661972808, guid: e5308987476467d4bb1ffb6a61938eef, type: 3}
+      propertyPath: m_bulletPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 4885705973455040673, guid: ce6d71885b50b3a4ab595b429bbde9f5, type: 3}
     - target: {fileID: 2636924905254315513, guid: e5308987476467d4bb1ffb6a61938eef, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.072922

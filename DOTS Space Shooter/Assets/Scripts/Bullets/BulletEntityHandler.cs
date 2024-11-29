@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BulletEntityHandler : MonoBehaviour
 {
+    // Since BulletEntityHandler will be in a SubScene it has no access to any objects outside of it so we need manually place them in.
     [SerializeField] private BulletPooling m_bulletPooling;
 
     public class BulletBaker : Baker<BulletEntityHandler>

@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 
 // I want to automize Bullets & enemy pooling as much as possible so I make an abstract class with functions used to register specific types of bullets.
 public struct BulletDefault : IComponentData {}
-public abstract class BulletEntity   : CharacterEntity
+public abstract class BulletEntity : CharacterEntity
 {
     // Add default components to bullet
     protected void AddDefaultComponents(Entity entity, IBaker baker, BulletEntity data)
@@ -26,7 +23,7 @@ public abstract class BulletEntity   : CharacterEntity
     [SerializeField] protected string m_bulletName       = "";
     [SerializeField] protected float  m_damage           = 10;
     [SerializeField] protected float  m_duration         = 2.0f;
-    [SerializeField] protected bool   m_defaultBehaviour = true; // Tells us if this bullet will use default movement behaviour
+    [SerializeField] protected bool   m_defaultBehaviour = true; // Should this bullet use default movement behaviour
     [SerializeField] protected int    m_poolSize         = 100;
 
     public int    m_nextInList = 0; // Predicts next bullet in pooling list, if it is not available we start from that point.
