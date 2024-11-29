@@ -29,11 +29,13 @@ public abstract class BulletEntity   : CharacterEntity
     [SerializeField] protected bool   m_defaultBehaviour = true; // Tells us if this bullet will use default movement behaviour
     [SerializeField] protected int    m_poolSize         = 100;
 
+    public int    m_nextInList = 0; // Predicts next bullet in pooling list, if it is not available we start from that point.
     public int    PoolSize   { get { return m_poolSize; } }
     public string BulletName { get { return m_bulletName; } }
+    public float  Duration   { get { return m_duration; } }
 
     // Register the bullet to BullerEntityHandler so we save it's entity for use of pooling
-    public abstract void RegisterBullet(Entity entity, IBaker baker, BulletEntity prefab);
+    public abstract void RegisterBullet(Entity entity, IBaker baker, GameObject prefab);
     // Instantiate pooling of this bullet specific directory 
     public abstract void InstantiateBulletPool(EntityManager manager);
 
@@ -41,7 +43,7 @@ public abstract class BulletEntity   : CharacterEntity
 }
 
 [BurstCompile]
-partial struct DefaultBulletSystem : ISystem
+partial struct DefaultBulletMovement: ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -60,7 +62,7 @@ partial struct DefaultBulletSystem : ISystem
     }
 }
 
-//[BurstCompile]
+[BurstCompile]
 [WithAll(typeof(BulletDefault))]
 public partial struct DefaultMoveBullet : IJobEntity
 {
@@ -69,9 +71,50 @@ public partial struct DefaultMoveBullet : IJobEntity
     {
         if (data.m_isAlive)
         {
-            Debug.Log(data.m_isAlive);
             transform.Position = transform.Position + dt * data.m_moveSpeed * transform.Forward();
 
+        }
+    }
+}
+
+[BurstCompile]
+partial struct BulletDataHandler : ISystem
+{
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<BulletData>();
+    }
+
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        BulletIsAlive isAliveJob = new BulletIsAlive
+        {
+            dt = SystemAPI.Time.DeltaTime
+        };
+        isAliveJob.ScheduleParallel();
+    }
+}
+
+// Duration on all bullets are handled equally
+[BurstCompile]
+[WithAll(typeof(BulletData))]
+public partial struct BulletIsAlive : IJobEntity
+{
+    public float dt;
+    void Execute(ref CharacterData data, ref BulletData bullet, ref LocalTransform transform)
+    {
+        if (data.m_isAlive)
+        {
+            if(bullet.m_duration <= 0.0f)
+            {
+                data.m_isAlive       = false;
+                bullet.m_duration    = 0.0f;
+                transform.Position.y = -100.0f;
+            }
+            else
+                bullet.m_duration -= dt;
         }
     }
 }

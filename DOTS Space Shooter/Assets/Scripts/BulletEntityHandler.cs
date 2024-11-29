@@ -13,8 +13,8 @@ public class BulletEntityHandler : MonoBehaviour
 
             for (int i = 0; authoring.m_bulletPooling.m_bulletPrefabs.Count > i; i++)
             {
-                BulletEntity bullet = authoring.m_bulletPooling.m_bulletPrefabs[i];
-                bullet.RegisterBullet(entity, this, bullet);
+                GameObject bullet = authoring.m_bulletPooling.m_bulletPrefabs[i];                
+                bullet.GetComponent<BulletEntity>().RegisterBullet(entity, this, bullet);
             }
         }
           

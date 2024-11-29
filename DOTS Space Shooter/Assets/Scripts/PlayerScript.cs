@@ -67,7 +67,9 @@ public class PlayerScript : CharacterEntity
         {
             if(m_timeForNextShot <= 0.0f)
             {
-                m_barrelSelector = m_barrelSelector >= m_barrels.Length ? 0 : m_barrelSelector++;
+                m_barrelSelector++;
+                m_barrelSelector = m_barrelSelector >= m_barrels.Length ? 0 : m_barrelSelector;
+                Debug.Log(m_barrelSelector);
                 m_bulletPool.ShootBullet(m_barrels[m_barrelSelector], "Pistol Bullet");
 
                 m_timeForNextShot = m_fireRate;

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -28,7 +30,7 @@ public class PistolBulletEntity : BulletEntity
         }
     }
 
-    public override void RegisterBullet(Entity entity, IBaker baker, BulletEntity prefab)
+    public override void RegisterBullet(Entity entity, IBaker baker, GameObject prefab)
     {
         baker.AddComponent(entity, new PistolBulletDirectory { m_bulletEntity = baker.GetEntity(prefab, TransformUsageFlags.Dynamic) });
     }
@@ -40,6 +42,15 @@ public class PistolBulletEntity : BulletEntity
         {
             NativeArray<Entity> newBullets = new NativeArray<Entity>(PoolSize, Allocator.TempJob);
             manager.Instantiate(query.GetSingleton<PistolBulletDirectory>().m_bulletEntity, newBullets);
+            for (int i = 0; i < newBullets.Length; i++)
+            {  
+                LocalTransform transform = new LocalTransform()
+                {
+                    Position = new Vector3(0.0f, -100.0f, 0.0f),
+                    Scale = 1.0f
+                };
+                manager.SetComponentData(newBullets[i], transform);
+            }
             newBullets.Dispose();
         }
         
