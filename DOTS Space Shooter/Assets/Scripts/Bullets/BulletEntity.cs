@@ -12,7 +12,7 @@ public abstract class BulletEntity : CharacterEntity
     // Add default components to bullet
     protected void AddDefaultComponents(Entity entity, IBaker baker, BulletEntity data)
     {
-        baker.AddComponent(entity, new CharacterData  { m_health = data.m_health, m_moveSpeed = data.m_moveSpeed, m_isAlive = false });
+        baker.AddComponent(entity, new CharacterData  { m_health = data.m_health, m_moveSpeed = data.m_moveSpeed, m_collisionRadius = data.m_collisionRadius, m_isAlive = false });
         baker.AddComponent(entity, new BulletData     { m_damage = data.m_damage, m_duration = data.m_duration });
         baker.AddComponent(entity, new LocalTransform { Position = new Vector3(0.0f, -100.0f, 0.0f) });
 

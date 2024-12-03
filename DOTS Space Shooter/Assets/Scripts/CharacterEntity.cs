@@ -7,6 +7,9 @@ public class CharacterEntity : MonoBehaviour
 {
     [SerializeField] protected float m_health;
     [SerializeField] protected float m_moveSpeed;
+    [SerializeField] protected float m_collisionRadius = 1.0f;
+
+    public float Health { get { return m_health; } }
 
     protected EntityManager m_enitiyManager;
     protected Entity        m_entity;
@@ -42,5 +45,14 @@ public class CharacterEntity : MonoBehaviour
         
         t.Position = transform.position;
         t.Rotation = transform.rotation;
+
+        m_enitiyManager.SetComponentData(m_entity, t);
+
+        if(m_health <= 0)
+        {
+            CharacterData data = m_enitiyManager.GetComponentData<CharacterData>(m_entity);
+            data.m_isAlive = false;
+            m_enitiyManager.SetComponentData(m_entity, data);
+        }
     }
 }

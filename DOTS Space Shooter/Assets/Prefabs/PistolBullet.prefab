@@ -98,8 +98,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_health: 1
   m_moveSpeed: 50
+  m_collisionRadius: 0.2
   m_bulletName: Pistol Bullet
   m_damage: 10
   m_duration: 2
   m_defaultBehaviour: 1
-  m_poolSize: 500
+  m_poolSize: 10000
+  m_nextInList: 5424

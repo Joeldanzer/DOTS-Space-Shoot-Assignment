@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7001984487853969342}
+  - component: {fileID: 1326060448849705191}
   m_Layer: 0
   m_Name: EnemyOne
   m_TagString: Untagged
@@ -36,6 +37,26 @@ Transform:
   - {fileID: 2676821062372968863}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1326060448849705191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769428239732605681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50da708ffd47d8e43b577d74036f614c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_health: 30
+  m_moveSpeed: 5
+  m_collisionRadius: 1.1
+  m_defaultBehaviour: 1
+  m_damage: 5
+  m_attackRange: 1.25
+  m_enemyName: Enemy One
+  m_poolSize: 10000
 --- !u!1 &4638911165226694162
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +317,6 @@ GameObject:
   - component: {fileID: 310607125010161631}
   - component: {fileID: 8986772986438143155}
   - component: {fileID: 3635629424945084741}
-  - component: {fileID: 6903103473002893846}
   m_Layer: 0
   m_Name: ArmTwo
   m_TagString: Untagged
@@ -369,27 +389,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6903103473002893846
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7384092981086974812}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8346514782858078684
 GameObject:
   m_ObjectHideFlags: 0
