@@ -1131,6 +1131,10 @@ PrefabInstance:
       propertyPath: m_spawnRange
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 5079222170922999416, guid: 20a13e66859aad641afb48628f542772, type: 3}
+      propertyPath: m_spawnTimer
+      value: 0.001
+      objectReference: {fileID: 0}
     - target: {fileID: 8496310987853229582, guid: 20a13e66859aad641afb48628f542772, type: 3}
       propertyPath: m_Name
       value: EnemySpawner

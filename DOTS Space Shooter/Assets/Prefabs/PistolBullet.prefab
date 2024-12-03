@@ -103,5 +103,5 @@ MonoBehaviour:
   m_damage: 10
   m_duration: 2
   m_defaultBehaviour: 1
-  m_poolSize: 10000
-  m_nextInList: 5424
+  m_poolSize: 1000
+  m_nextInList: 387

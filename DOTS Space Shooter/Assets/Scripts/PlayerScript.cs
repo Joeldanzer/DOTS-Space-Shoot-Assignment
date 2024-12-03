@@ -27,6 +27,11 @@ public class PlayerScript : CharacterEntity
 
     protected override void UpdateGameObject(float dt)
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         RotatePlayer();
         MovePlayer(dt);
         Shoot(dt);
